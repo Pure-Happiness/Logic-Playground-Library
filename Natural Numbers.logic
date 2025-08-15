@@ -11,8 +11,10 @@ ArbitraryObject recurse recurse S`(S~base~S)~S~base~S
 Assume RecurseA RecurseA !S@!f:S~base~S@!init:S@recurse#S#f#init#0=init
 Assume RecurseB RecurseB !S@!f:S~base~S@!init:S@!n:base@recurse#S#f#init#(next#n)=f#(recurse#S#f#init#n)#n
 Object 1 next#0
-Object 2 next#(next#0)
+Object 2 next#1
 Object add recurse#base#(x:base@y:base@next#x)
+Object mul m:base@recurse#base#(x:base@y:base@add#x#m)#0
+Object pow m:base@recurse#base#(x:base@y:base@mul#x#m)#1
 Scope ProofOfAdd
 UT 0 RecurseA base
 EIB 1 0
@@ -303,10 +305,8 @@ ER 237 235
 ET 238 237 234
 ET 239 238 236
 ET a0 227 239
-EIB a1 a0
-EI a2 add#n#1=next#n
-ET a3 a2 a1
-EEB Addn1 a3
+EI a1 add#n#1
+ET Addn1 a1 a0
 Export Addn1
 Exit
 Export Add0n
@@ -589,4 +589,85 @@ Exit
 Export AddCommutative
 Exit
 Export AddCommutative
+Exit
+Scope ProofOfMul
+ArbitraryObject n n base
+UT 0 RecurseA base
+EIB 1 0
+Template 2 S !f:S~base~S@!init:S@recurse#S#f#init#0=init base
+ER 3 2
+ET 4 3 1
+EEB 5 4
+UF 6 5 x:base@y:base@add#x#n
+EIB 7 6
+Function 8 f !init:base@recurse#base#f#init#0=init x:base@y:base@add#x#n
+ER 9 8
+ET 10 9 7
+EEB 11 10
+UF 12 11 0
+EIB 13 12
+Function 14 init recurse#base#(x:base@y:base@add#x#n)#init#0=init 0
+ER 15 14
+ET 16 15 13
+EEB 17 16
+Function 18 m recurse#base#(x:base@y:base@add#x#m)#0 n
+EE 19 18 x:base~base@x#0
+Function 20 x x#0 mul#n
+Function 21 x x#0 recurse#base#(x:base@y:base@add#x#n)#0
+ER 22 20
+ET 23 22 19
+ET 24 23 21
+ET MulA 24 17
+Export MulA
+Exit
+Export MulA
+ArbitraryObject m m base
+UT 0 RecurseB base
+EIB 1 0
+Template 2 S !f:S~base~S@!init:S@!n:base@recurse#S#f#init#(next#n)=f#(recurse#S#f#init#n)#n base
+ER 3 2
+ET 4 3 1
+EEB 5 4
+UF 6 5 x:base@y:base@add#x#m
+EIB 7 6
+Function 8 f !init:base@!n:base@recurse#base#f#init#(next#n)=f#(recurse#base#f#init#n)#n x:base@y:base@add#x#m
+ER 9 8
+ET 10 9 7
+EEB 11 10
+UF 12 11 0
+EIB 13 12
+Function 14 init !n:base@recurse#base#(x:base@y:base@add#x#m)#init#(next#n)=(x:base@y:base@add#x#m)#(recurse#base#(x:base@y:base@add#x#m)#init#n)#n 0
+ER 15 14
+ET 16 15 13
+Function 17 m recurse#base#(x:base@y:base@add#x#m)#0 m
+EE 18 17 x:base~base@!n:base@x#(next#n)=(x:base@y:base@add#x#m)#(x#n)#n
+Function 19 x !n:base@x#(next#n)=(x:base@y:base@add#x#m)#(x#n)#n mul#m
+Function 20 x !n:base@x#(next#n)=(x:base@y:base@add#x#m)#(x#n)#n recurse#base#(x:base@y:base@add#x#m)#0
+ER 21 19
+ET 22 21 18
+ET 23 22 20
+ET 24 23 16
+EEB 25 24
+ArbitraryObject n n base
+UF 26 25 n
+EIB 27 26
+Function 28 n mul#m#(next#n)=(x:base@y:base@add#x#m)#(mul#m#n)#n n
+ER 29 28
+ET 30 29 27
+EEB 31 30
+Function 32 x y:base@add#x#m mul#m#n
+EE 33 32 x:base~base@x#n
+Function 34 x x#n (x:base@y:base@add#x#m)#(mul#m#n)
+Function 35 x x#n y:base@add#(mul#m#n)#m
+ER 36 34
+ET 37 36 33
+ET 38 37 35
+ET 39 31 38
+Function 40 y add#(mul#m#n)#m n
+ET MulB 39 40
+Export MulB
+Exit
+Export MulB
+Exit
+Export MulB
 Exit
