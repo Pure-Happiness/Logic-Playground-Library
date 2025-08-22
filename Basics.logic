@@ -3,6 +3,10 @@ Object or p:bool@q:bool@p?true?q
 Object implies p:bool@q:bool@p?q?true
 Object xor p:bool@q:bool@p?q=false?q
 Object not p:bool@p=false
+Object exist S@f:S~bool@(!x:S@f#x=false)=false
+Object first S@x:S@y:S@x
+Object second S@x:S@y:S@y
+Object pair S@x:S@y:S@f:T`T~T~T@f#S#x#y
 Scope ProofOfTrue
 EI Basics-0 true
 EEB TRUE Basics-0
@@ -21,44 +25,6 @@ Exit
 Export FALSE
 Exit
 Export FALSE
-Exit
-Scope ProofOfTheoremsA
-ArbitraryObject Basics-0 p bool
-ArbitraryObject Basics-1 q bool
-Assume Basics-2 Basics-0 p=q
-Assume Basics-3 Basics-1 p
-EIB Basics-2 Basics-1
-ER Basics-3 Basics-0
-ET Basics-4 Basics-3 Basics-2
-EEB THEOREMSA Basics-4
-Export THEOREMSA
-Exit
-Export THEOREMSA
-Exit
-Export THEOREMSA
-Exit
-Export THEOREMSA
-Exit
-Export THEOREMSA
-Exit
-Scope ProofOfTheoremsB
-ArbitraryObject Basics-0 p bool
-ArbitraryObject Basics-1 q bool
-Assume Basics-2 Basics-0 p
-Assume Basics-3 Basics-1 q
-EIB Basics-2 Basics-0
-EIB Basics-3 Basics-1
-ER Basics-4 Basics-3
-ET THEOREMSB Basics-2 Basics-4
-Export THEOREMSB
-Exit
-Export THEOREMSB
-Exit
-Export THEOREMSB
-Exit
-Export THEOREMSB
-Exit
-Export THEOREMSB
 Exit
 Scope ProofOfDoubleNegation
 ArbitraryObject Basics-0 p bool
@@ -247,7 +213,89 @@ Export Iff
 Exit
 Export Iff
 Exit
-Object exists S@f:S~bool@(!x:S@f#x=false)=false
-Object first S@x:S@y:S@x
-Object second S@x:S@y:S@y
-Object pair S@x:S@y:S@f:T`T~T~T@f#S#x#y
+Scope ProofOfForAll
+ArbitraryType type S
+ArbitraryObject f f S~bool
+ArbitraryObject x x S
+Assume Assumption 0 f#x=false
+Assume Assumption 1 !f=false=false
+UF 2 DoubleNegation !f
+EIB 3 2
+Function 4 p p=false=false=p !f
+ER 5 4
+ET 6 5 3
+EEB 7 6
+EIB 8 1
+ER 9 7
+ET 10 9 8
+EEB 11 10
+UF 12 11 x
+EIB 13 12
+ER 14 0
+ET 15 14 13
+EEB 16 15
+Export 16
+Exit
+C3 ForAll 16
+Export ForAll
+Exit
+Export ForAll
+Exit
+Export ForAll
+Exit
+Export ForAll
+Exit
+Export ForAll
+Exit
+Scope ProofOfExist
+ArbitraryType type S
+ArbitraryObject f f S~bool
+ArbitraryObject x x S
+Assume Assumption 0 f#x
+Assume Assumption 1 exist#S#f=false
+Template 2 S f:S~bool@(!x:S@f#x=false)=false S
+EI 3 exist#S
+ET 4 3 2
+EE 5 4 p:(S~bool)~bool@p#f
+Function 6 p p#f exist#S
+ER 7 6
+ET 8 7 5
+Function 9 p p#f f:S~bool@!(x:S@f#x=false)=false
+ET 10 8 9
+Function 11 f !(x:S@f#x=false)=false f
+ET 12 10 11
+ER 13 12
+ET 14 13 1
+UF 15 DoubleNegation !x:S@f#x=false
+EIB 16 15
+Function 17 p p=false=false=p !x:S@f#x=false
+ER 18 17
+ET 19 18 16
+EEB 20 19
+EIB 21 14
+ER 22 20
+ET 23 22 21
+EEB 24 23
+UF 25 24 x
+EIB 26 25
+Function 27 x f#x=false x
+ER 28 27
+ET 29 28 26
+EEB 30 29
+EIB 31 0
+ER 32 30
+ET 33 32 31
+EEB 34 33
+Export 34
+Exit
+C3 Exist 34
+Export Exist
+Exit
+Export Exist
+Exit
+Export Exist
+Exit
+Export Exist
+Exit
+Export Exist
+Exit

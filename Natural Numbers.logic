@@ -3,7 +3,7 @@ ArbitraryObject nat nat base~bool
 ArbitraryObject 0 0 base
 Assume PeanoA PeanoA nat#0
 ArbitraryObject next next base~base
-Assume PeanoB PeanoB !n:base@nat#(next#n)
+Assume PeanoB PeanoB !n:base@nat#n?nat#(next#n)?true
 Assume PeanoC PeanoC !m:base@nat#m?(!n:base@nat#n?(next#m=next#n?m=n?true)?true)?true
 Assume PeanoD PeanoD !n:base@nat#n?(next#n=0=false)?true
 Assume PeanoE PeanoE !set:base~bool@set#0?((!n:base@nat#n?(set#n?set#(next#n)?true)?true)?(!n:base@nat#n?set#n?true)?true)?true
@@ -11,10 +11,12 @@ ArbitraryObject recurse recurse S`(S~base~S)~S~base~S
 Assume RecurseA RecurseA !S@!f:S~base~S@!init:S@recurse#S#f#init#0=init
 Assume RecurseB RecurseB !S@!f:S~base~S@!init:S@!n:base@recurse#S#f#init#(next#n)=f#(recurse#S#f#init#n)#n
 Object 1 next#0
-Object 2 next#1
 Object add recurse#base#(x:base@y:base@next#x)
 Object mul m:base@recurse#base#(x:base@y:base@add#x#m)#0
 Object pow m:base@recurse#base#(x:base@y:base@mul#x#m)#1
+Object sumN f:base~base@recurse#base#(x:base@y:base@add#x#(f#y))#0
+Object prodN f:base~base@recurse#base#(x:base@y:base@mul#x#(f#y))#1
+Object bin x:base@y:base@add#(add#x#x)#y
 Scope ProofOfAdd
 UT 0 RecurseA base
 EIB 1 0
@@ -670,4 +672,1095 @@ Exit
 Export MulB
 Exit
 Export MulB
+ArbitraryObject a a base
+Assume aa -1 nat#a
+ArbitraryObject b b base
+UF 0 AddA b
+EIB 1 0
+Function 2 n add#n#0=n b
+ER 3 2
+ET 4 3 1
+EEB 5 4
+EE 6 5 x:base@mul#a#x
+Function 7 x mul#a#x add#b#0
+ER 8 7
+ET 9 8 6
+Function 10 x mul#a#x b
+ET 11 9 10
+UF 12 MulA a
+EIB 13 12
+Function 14 n mul#n#0=0 a
+ER 15 14
+ET 16 15 13
+EEB 17 16
+EE 18 17 x:base@add#(mul#a#b)#x
+Function 19 x add#(mul#a#b)#x mul#a#0
+ER 20 19
+ET 21 20 18
+Function 22 x add#(mul#a#b)#x 0
+ET 23 21 22
+UF 24 AddA mul#a#b
+EIB 25 24
+Function 26 n add#n#0=n mul#a#b
+ER 27 26
+ET 28 27 25
+EEB 29 28
+ET 30 23 29
+ER 31 30
+ET 32 11 31
+EIB 33 32
+Function 34 x mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x) 0
+ET 35 34 33
+EEB 36 35
+ArbitraryObject c c base
+Assume cc 37 nat#c
+Assume Assumption 38 (x:base@mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x))#c
+Function 39 x mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x) c
+EIB 40 38
+ER 41 39
+ET 42 41 40
+EEB 43 42
+UF 44 AddB b
+EIB 45 44
+Function 46 m !n:base@add#m#(next#n)=next#(add#m#n) b
+ER 47 46
+ET 48 47 45
+EEB 49 48
+UF 50 49 c
+EIB 51 50
+Function 52 n add#b#(next#n)=next#(add#b#n) c
+ER 53 52
+ET 54 53 51
+EEB 55 54
+EE 56 55 x:base@mul#a#x
+Function 57 x mul#a#x add#b#(next#c)
+ER 58 57
+ET 59 58 56
+Function 60 x mul#a#x next#(add#b#c)
+ET 61 59 60
+UF 62 MulB a
+EIB 63 62
+Function 64 m !n:base@mul#m#(next#n)=add#(mul#m#n)#m a
+ER 65 64
+ET 66 65 63
+EEB 67 66
+UF 68 67 add#b#c
+EIB 69 68
+Function 70 n mul#a#(next#n)=add#(mul#a#n)#a add#b#c
+ER 71 70
+ET 72 71 69
+EEB 73 72
+ET 74 61 73
+EE 75 43 x:base@add#x#a
+Function 76 x add#x#a mul#a#(add#b#c)
+ER 77 76
+ET 78 77 75
+Function 79 x add#x#a add#(mul#a#b)#(mul#a#c)
+ET 80 78 79
+UF 81 AddAssociative mul#a#b
+EIB 82 81
+Function 83 m !n:base@!y:base@nat#y?add#(add#m#n)#y=add#m#(add#n#y)?true mul#a#b
+ER 84 83
+ET 85 84 82
+EEB 86 85
+UF 87 86 mul#a#c
+EIB 88 87
+Function 89 n !y:base@nat#y?add#(add#(mul#a#b)#n)#y=add#(mul#a#b)#(add#n#y)?true mul#a#c
+ER 90 89
+ET 91 90 88
+EEB 92 91
+UF 93 92 a
+EIB 94 93
+Function 95 y nat#y?add#(add#(mul#a#b)#(mul#a#c))#y=add#(mul#a#b)#(add#(mul#a#c)#y)?true a
+ER 96 95
+ET 97 96 94
+EEB 98 97
+C0 99 -1 add#(add#(mul#a#b)#(mul#a#c))#a=add#(mul#a#b)#(add#(mul#a#c)#a) true
+EIB 100 98
+ER 101 99
+ET 102 101 100
+EEB 103 102
+ET 104 80 103
+UF 105 MulB a
+EIB 106 105
+Function 107 m !n:base@mul#m#(next#n)=add#(mul#m#n)#m a
+ER 108 107
+ET 109 108 106
+EEB 110 109
+UF 111 110 c
+EIB 112 111
+Function 113 n mul#a#(next#n)=add#(mul#a#n)#a c
+ER 114 113
+ET 115 114 112
+EEB 116 115
+ER 117 116
+EE 118 117 x:base@add#(mul#a#b)#x
+Function 119 x add#(mul#a#b)#x add#(mul#a#c)#a
+ER 120 119
+ET 121 120 118
+Function 122 x add#(mul#a#b)#x mul#a#(next#c)
+ET 123 121 122
+ET 124 104 123
+ET 125 74 124
+Function 126 x mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x) next#c
+EIB 127 125
+ET 128 126 127
+EEB 129 128
+Export 129
+Exit
+Export 129
+Exit
+Export 129
+Exit
+UF 130 PeanoE x:base@mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x)
+EIB 131 130
+Function 132 set set#0?(!(n:base@nat#n?(set#n?set#(next#n)?true)?true)?!(n:base@nat#n?set#n?true)?true)?true x:base@mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x)
+ER 133 132
+ET 134 133 131
+EEB 135 134
+C0 136 36 (!(n:base@nat#n?((x:base@mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x))#n?(x:base@mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x))#(next#n)?true)?true)?!(n:base@nat#n?(x:base@mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x))#n?true)?true) true
+EIB 137 135
+ER 138 136
+ET 139 138 137
+EEB 140 139
+C0 141 129 !(n:base@nat#n?(x:base@mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x))#n?true) true
+EIB 142 140
+ER 143 141
+ET 144 143 142
+EEB 145 144
+ArbitraryObject cc c base
+UF 146 145 c
+EIB 147 146
+Function 148 n nat#n?(x:base@mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x))#n?true c
+ER 149 148
+ET 150 149 147
+EEB 151 150
+Function 152 x mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x) c
+EE 153 152 x:bool@nat#c?x?true
+Function 154 x nat#c?x?true (x:base@mul#a#(add#b#x)=add#(mul#a#b)#(mul#a#x))#c
+ER 155 154
+ET 156 155 153
+Function 157 x nat#c?x?true mul#a#(add#b#c)=add#(mul#a#b)#(mul#a#c)
+ET 158 156 157
+EIB 159 151
+ER 160 158
+ET 161 160 159
+EEB MulDistribution 161
+Export MulDistribution
+Exit
+Export MulDistribution
+Exit
+Export MulDistribution
+Exit
+Export MulDistribution
+Exit
+ArbitraryObject x x base
+Assume xx 0 nat#x
+ArbitraryObject y y base
+Assume yy 1 nat#y
+UF 2 MulA mul#x#y
+EIB 3 2
+Function 4 n mul#n#0=0 mul#x#y
+ER 5 4
+ET 6 5 3
+EEB 7 6
+UF 8 MulA y
+EIB 9 8
+Function 10 n mul#n#0=0 y
+ER 11 10
+ET 12 11 9
+EEB 13 12
+EE 14 13 a:base@mul#x#a
+Function 15 a mul#x#a mul#y#0
+ER 16 15
+ET 17 16 14
+Function 18 a mul#x#a 0
+ET 19 17 18
+UF 20 MulA x
+EIB 21 20
+Function 22 n mul#n#0=0 x
+ER 23 22
+ET 24 23 21
+EEB 25 24
+ET 26 19 25
+ER 27 26
+ET 28 7 27
+EIB 29 28
+Function 30 a mul#(mul#x#y)#a=mul#x#(mul#y#a) 0
+ET 31 30 29
+EEB 32 31
+ArbitraryObject z z base
+Assume zz 33 nat#z
+Assume Assumption 34 (a:base@mul#(mul#x#y)#a=mul#x#(mul#y#a))#z
+Function 35 a mul#(mul#x#y)#a=mul#x#(mul#y#a) z
+EIB 36 34
+ER 37 35
+ET 38 37 36
+EEB 39 38
+UF 40 MulB mul#x#y
+EIB 41 40
+Function 42 m !n:base@mul#m#(next#n)=add#(mul#m#n)#m mul#x#y
+ER 43 42
+ET 44 43 41
+EEB 45 44
+UF 46 45 z
+EIB 47 46
+Function 48 n mul#(mul#x#y)#(next#n)=add#(mul#(mul#x#y)#n)#(mul#x#y) z
+ER 49 48
+ET 50 49 47
+EEB 51 50
+EE 52 39 a:base@add#a#(mul#x#y)
+Function 53 a add#a#(mul#x#y) mul#(mul#x#y)#z
+ER 54 53
+ET 55 54 52
+Function 56 a add#a#(mul#x#y) mul#x#(mul#y#z)
+ET 57 55 56
+ET 58 51 57
+UF 59 MulDistribution x
+EIB 60 59
+Function 61 a nat#a?!(b:base@!n:base@nat#n?mul#a#(add#b#n)=add#(mul#a#b)#(mul#a#n)?true)?true x
+ER 62 61
+ET 63 62 60
+EEB 64 63
+C0 65 0 !(b:base@!n:base@nat#n?mul#x#(add#b#n)=add#(mul#x#b)#(mul#x#n)?true) true
+EIB 66 64
+ER 67 65
+ET 68 67 66
+EEB 69 68
+UF 70 69 mul#y#z
+EIB 71 70
+Function 72 b !n:base@nat#n?mul#x#(add#b#n)=add#(mul#x#b)#(mul#x#n)?true mul#y#z
+ER 73 72
+ET 74 73 71
+EEB 75 74
+UF 76 75 y
+EIB 77 76
+Function 78 n nat#n?mul#x#(add#(mul#y#z)#n)=add#(mul#x#(mul#y#z))#(mul#x#n)?true y
+ER 79 78
+ET 80 79 77
+EEB 81 80
+C0 82 1 mul#x#(add#(mul#y#z)#y)=add#(mul#x#(mul#y#z))#(mul#x#y) true
+EIB 83 81
+ER 84 82
+ET 85 84 83
+EEB 86 85
+ER 87 86
+ET 88 58 87
+UF 89 MulB y
+EIB 90 89
+Function 91 m !n:base@mul#m#(next#n)=add#(mul#m#n)#m y
+ER 92 91
+ET 93 92 90
+EEB 94 93
+UF 95 94 z
+EIB 96 95
+Function 97 n mul#y#(next#n)=add#(mul#y#n)#y z
+ER 98 97
+ET 99 98 96
+EEB 100 99
+ER 101 100
+EE 102 101 a:base@mul#x#a
+Function 103 a mul#x#a add#(mul#y#z)#y
+ER 104 103
+ET 105 104 102
+Function 106 a mul#x#a mul#y#(next#z)
+ET 107 105 106
+ET 108 88 107
+EIB 109 108
+Function 110 a mul#(mul#x#y)#a=mul#x#(mul#y#a) next#z
+ET 111 110 109
+EEB 112 111
+Export 112
+Exit
+Export 112
+Exit
+Export 112
+Exit
+UF 113 PeanoE a:base@mul#(mul#x#y)#a=mul#x#(mul#y#a)
+EIB 114 113
+Function 115 set set#0?(!(n:base@nat#n?(set#n?set#(next#n)?true)?true)?!(n:base@nat#n?set#n?true)?true)?true a:base@mul#(mul#x#y)#a=mul#x#(mul#y#a)
+ER 116 115
+ET 117 116 114
+EEB 118 117
+C0 119 32 (!(n:base@nat#n?((a:base@mul#(mul#x#y)#a=mul#x#(mul#y#a))#n?(a:base@mul#(mul#x#y)#a=mul#x#(mul#y#a))#(next#n)?true)?true)?!(n:base@nat#n?(a:base@mul#(mul#x#y)#a=mul#x#(mul#y#a))#n?true)?true) true
+EIB 120 118
+ER 121 119
+ET 122 121 120
+EEB 123 122
+C0 124 112 !(n:base@nat#n?(a:base@mul#(mul#x#y)#a=mul#x#(mul#y#a))#n?true) true
+EIB 125 123
+ER 126 124
+ET 127 126 125
+EEB 128 127
+ArbitraryObject zz z base
+UF 129 128 z
+EIB 130 129
+Function 131 n nat#n?(a:base@mul#(mul#x#y)#a=mul#x#(mul#y#a))#n?true z
+ER 132 131
+ET 133 132 130
+EEB 134 133
+Function 135 a mul#(mul#x#y)#a=mul#x#(mul#y#a) z
+EE 136 135 w:bool@nat#z?w?true
+Function 137 w nat#z?w?true (a:base@mul#(mul#x#y)#a=mul#x#(mul#y#a))#z
+ER 138 137
+ET 139 138 136
+Function 140 w nat#z?w?true mul#(mul#x#y)#z=mul#x#(mul#y#z)
+ET 141 139 140
+EIB 142 134
+ER 143 141
+ET 144 143 142
+EEB MulAssociative 144
+Export MulAssociative
+Exit
+Export MulAssociative
+Exit
+Export MulAssociative
+Exit
+Export MulAssociative
+Exit
+Export MulAssociative
+Exit
+Scope P0a
+UF 0 MulA 0
+EIB 1 0
+Function 2 n mul#n#0=0 0
+ER 3 2
+ET 4 3 1
+EEB 5 4
+EIB 6 5
+Function 7 x mul#0#x=0 0
+ET 8 7 6
+EEB 9 8
+ArbitraryObject a a base
+Assume aa 10 nat#a
+Assume Assumption 11 (x:base@mul#0#x=0)#a
+Function 12 x mul#0#x=0 a
+EIB 13 11
+ER 14 12
+ET 15 14 13
+EEB 16 15
+UF 17 MulB 0
+EIB 18 17
+Function 19 m !n:base@mul#m#(next#n)=add#(mul#m#n)#m 0
+ER 20 19
+ET 21 20 18
+EEB 22 21
+UF 23 22 a
+EIB 24 23
+Function 25 n mul#0#(next#n)=add#(mul#0#n)#0 a
+ER 26 25
+ET 27 26 24
+EEB 28 27
+EE 29 16 x:base@add#x#0
+Function 30 x add#x#0 mul#0#a
+ER 31 30
+ET 32 31 29
+Function 33 x add#x#0 0
+ET 34 32 33
+ET 35 28 34
+UF 36 AddA 0
+EIB 37 36
+Function 38 n add#n#0=n 0
+ER 39 38
+ET 40 39 37
+EEB 41 40
+ET 42 35 41
+EIB 43 42
+Function 44 x mul#0#x=0 next#a
+ET 45 44 43
+EEB 46 45
+Export 46
+Exit
+Export 46
+Exit
+Export 46
+Exit
+UF 47 PeanoE x:base@mul#0#x=0
+EIB 48 47
+Function 49 set set#0?(!(n:base@nat#n?(set#n?set#(next#n)?true)?true)?!(n:base@nat#n?set#n?true)?true)?true x:base@mul#0#x=0
+ER 50 49
+ET 51 50 48
+EEB 52 51
+C0 53 9 (!(n:base@nat#n?((x:base@mul#0#x=0)#n?(x:base@mul#0#x=0)#(next#n)?true)?true)?!(n:base@nat#n?(x:base@mul#0#x=0)#n?true)?true) true
+EIB 54 52
+ER 55 53
+ET 56 55 54
+EEB 57 56
+C0 58 46 !(n:base@nat#n?(x:base@mul#0#x=0)#n?true) true
+EIB 59 57
+ER 60 58
+ET 61 60 59
+EEB 62 61
+ArbitraryObject n n base
+UF 63 62 n
+EIB 64 63
+Function 65 n nat#n?(x:base@mul#0#x=0)#n?true n
+ER 66 65
+ET 67 66 64
+EEB 68 67
+Function 69 x mul#0#x=0 n
+EE 70 69 p:bool@nat#n?p?true
+Function 71 p nat#n?p?true (x:base@mul#0#x=0)#n
+ER 72 71
+ET 73 72 70
+Function 74 p nat#n?p?true mul#0#n=0
+ET 75 73 74
+EIB 76 68
+ER 77 75
+ET 78 77 76
+EEB Mul0n 78
+Export Mul0n
+Exit
+Export Mul0n
+Exit
+ArbitraryObject aa a base
+Assume a 0 nat#a
+UF 1 MulA next#a
+EIB 2 1
+Function 3 n mul#n#0=0 next#a
+ER 4 3
+ET 5 4 2
+EEB 6 5
+UF 7 MulA a
+EIB 8 7
+Function 9 n mul#n#0=0 a
+ER 10 9
+ET 11 10 8
+EEB 12 11
+ER 13 12
+EE 14 13 x:base@add#x#0
+Function 15 x add#x#0 0
+ER 16 15
+ET 17 16 14
+Function 18 x add#x#0 mul#a#0
+ET 19 17 18
+UF 20 AddA 0
+EIB 21 20
+Function 22 n add#n#0=n 0
+ER 23 22
+ET 24 23 21
+EEB 25 24
+ER 26 25
+ET 27 26 19
+ET 28 6 27
+EIB 29 28
+Function 30 x mul#(next#a)#x=add#(mul#a#x)#x 0
+ET 31 30 29
+EEB 32 31
+ArbitraryObject b b base
+Assume bb 33 nat#b
+Assume Assumption 34 (x:base@mul#(next#a)#x=add#(mul#a#x)#x)#b
+Function 35 x mul#(next#a)#x=add#(mul#a#x)#x b
+EIB 36 34
+ER 37 35
+ET 38 37 36
+EEB 39 38
+UF 40 MulB next#a
+EIB 41 40
+Function 42 m !n:base@mul#m#(next#n)=add#(mul#m#n)#m next#a
+ER 43 42
+ET 44 43 41
+EEB 45 44
+UF 46 45 b
+EIB 47 46
+Function 48 n mul#(next#a)#(next#n)=add#(mul#(next#a)#n)#(next#a) b
+ER 49 48
+ET 50 49 47
+EEB 51 50
+EE 52 39 x:base@add#x#(next#a)
+Function 53 x add#x#(next#a) mul#(next#a)#b
+ER 54 53
+ET 55 54 52
+Function 56 x add#x#(next#a) add#(mul#a#b)#b
+ET 57 55 56
+ET 58 51 57
+UF 59 AddAssociative mul#a#b
+EIB 60 59
+Function 61 m !n:base@!y:base@nat#y?add#(add#m#n)#y=add#m#(add#n#y)?true mul#a#b
+ER 62 61
+ET 63 62 60
+EEB 64 63
+UF 65 64 b
+EIB 66 65
+Function 67 n !y:base@nat#y?add#(add#(mul#a#b)#n)#y=add#(mul#a#b)#(add#n#y)?true b
+ER 68 67
+ET 69 68 66
+EEB 70 69
+UF 71 70 next#a
+EIB 72 71
+Function 73 y nat#y?add#(add#(mul#a#b)#b)#y=add#(mul#a#b)#(add#b#y)?true next#a
+ER 74 73
+ET 75 74 72
+EEB 76 75
+UF 77 PeanoB a
+EIB 78 77
+Function 79 n nat#n?nat#(next#n)?true a
+ER 80 79
+ET 81 80 78
+EEB 82 81
+C0 83 0 nat#(next#a) true
+EIB 84 82
+ER 85 83
+ET 86 85 84
+EEB 87 86
+C0 88 87 add#(add#(mul#a#b)#b)#(next#a)=add#(mul#a#b)#(add#b#(next#a)) true
+EIB 89 76
+ER 90 88
+ET 91 90 89
+EEB 92 91
+ET 93 58 92
+UF 94 AddB b
+EIB 95 94
+Function 96 m !n:base@add#m#(next#n)=next#(add#m#n) b
+ER 97 96
+ET 98 97 95
+EEB 99 98
+UF 100 99 a
+EIB 101 100
+Function 102 n add#b#(next#n)=next#(add#b#n) a
+ER 103 102
+ET 104 103 101
+EEB 105 104
+EE 106 105 x:base@add#(mul#a#b)#x
+Function 107 x add#(mul#a#b)#x add#b#(next#a)
+ER 108 107
+ET 109 108 106
+Function 110 x add#(mul#a#b)#x next#(add#b#a)
+ET 111 109 110
+ET 112 93 111
+UF 113 AddCommutative b
+EIB 114 113
+Function 115 m nat#m?!(n:base@nat#n?add#m#n=add#n#m?true)?true b
+ER 116 115
+ET 117 116 114
+EEB 118 117
+C0 119 33 !(n:base@nat#n?add#b#n=add#n#b?true) true
+EIB 120 118
+ER 121 119
+ET 122 121 120
+EEB 123 122
+UF 124 123 a
+EIB 125 124
+Function 126 n nat#n?add#b#n=add#n#b?true a
+ER 127 126
+ET 128 127 125
+EEB 129 128
+C0 130 0 add#b#a=add#a#b true
+EIB 131 129
+ER 132 130
+ET 133 132 131
+EEB 134 133
+EE 135 134 x:base@add#(mul#a#b)#(next#x)
+Function 136 x add#(mul#a#b)#(next#x) add#b#a
+ER 137 136
+ET 138 137 135
+Function 139 x add#(mul#a#b)#(next#x) add#a#b
+ET 140 138 139
+ET 141 112 140
+UF 142 AddB a
+EIB 143 142
+Function 144 m !n:base@add#m#(next#n)=next#(add#m#n) a
+ER 145 144
+ET 146 145 143
+EEB 147 146
+UF 148 147 b
+EIB 149 148
+Function 150 n add#a#(next#n)=next#(add#a#n) b
+ER 151 150
+ET 152 151 149
+EEB 153 152
+ER 154 153
+EE 155 154 x:base@add#(mul#a#b)#x
+Function 156 x add#(mul#a#b)#x next#(add#a#b)
+ER 157 156
+ET 158 157 155
+Function 159 x add#(mul#a#b)#x add#a#(next#b)
+ET 160 158 159
+ET 161 141 160
+UF 162 64 a
+EIB 163 162
+Function 164 n !y:base@nat#y?add#(add#(mul#a#b)#n)#y=add#(mul#a#b)#(add#n#y)?true a
+ER 165 164
+ET 166 165 163
+EEB 167 166
+UF 168 167 next#b
+EIB 169 168
+Function 170 y nat#y?add#(add#(mul#a#b)#a)#y=add#(mul#a#b)#(add#a#y)?true next#b
+ER 171 170
+ET 172 171 169
+EEB 173 172
+UF 174 PeanoB b
+EIB 175 174
+Function 176 n nat#n?nat#(next#n)?true b
+ER 177 176
+ET 178 177 175
+EEB 179 178
+C0 180 33 nat#(next#b) true
+EIB 181 179
+ER 182 180
+ET 183 182 181
+EEB 184 183
+C0 185 184 add#(add#(mul#a#b)#a)#(next#b)=add#(mul#a#b)#(add#a#(next#b)) true
+EIB 186 173
+ER 187 185
+ET 188 187 186
+EEB 189 188
+ER 190 189
+ET 191 161 190
+UF 192 MulB a
+EIB 193 192
+Function 194 m !n:base@mul#m#(next#n)=add#(mul#m#n)#m a
+ER 195 194
+ET 196 195 193
+EEB 197 196
+UF 198 197 b
+EIB 199 198
+Function 200 n mul#a#(next#n)=add#(mul#a#n)#a b
+ER 201 200
+ET 202 201 199
+EEB 203 202
+ER 204 203
+EE 205 204 x:base@add#x#(next#b)
+Function 206 x add#x#(next#b) add#(mul#a#b)#a
+ER 207 206
+ET 208 207 205
+Function 209 x add#x#(next#b) mul#a#(next#b)
+ET 210 208 209
+ET 211 191 210
+EIB 212 211
+Function 213 x mul#(next#a)#x=add#(mul#a#x)#x next#b
+ET 214 213 212
+EEB 215 214
+Export 215
+Exit
+Export 215
+Exit
+Export 215
+Exit
+UF 216 PeanoE x:base@mul#(next#a)#x=add#(mul#a#x)#x
+EIB 217 216
+Function 218 set set#0?(!(n:base@nat#n?(set#n?set#(next#n)?true)?true)?!(n:base@nat#n?set#n?true)?true)?true x:base@mul#(next#a)#x=add#(mul#a#x)#x
+ER 219 218
+ET 220 219 217
+EEB 221 220
+C0 222 32 (!(n:base@nat#n?((x:base@mul#(next#a)#x=add#(mul#a#x)#x)#n?(x:base@mul#(next#a)#x=add#(mul#a#x)#x)#(next#n)?true)?true)?!(n:base@nat#n?(x:base@mul#(next#a)#x=add#(mul#a#x)#x)#n?true)?true) true
+EIB 223 221
+ER 224 222
+ET 225 224 223
+EEB 226 225
+C0 227 215 !(n:base@nat#n?(x:base@mul#(next#a)#x=add#(mul#a#x)#x)#n?true) true
+EIB 228 226
+ER 229 227
+ET 230 229 228
+EEB 231 230
+ArbitraryObject bb b base
+UF 232 231 b
+EIB 233 232
+Function 234 n nat#n?(x:base@mul#(next#a)#x=add#(mul#a#x)#x)#n?true b
+ER 235 234
+ET 236 235 233
+EEB 237 236
+Function 238 x mul#(next#a)#x=add#(mul#a#x)#x b
+EE 239 238 p:bool@nat#b?p?true
+Function 240 p nat#b?p?true (x:base@mul#(next#a)#x=add#(mul#a#x)#x)#b
+ER 241 240
+ET 242 241 239
+Function 243 p nat#b?p?true mul#(next#a)#b=add#(mul#a#b)#b
+ET 244 242 243
+EIB 245 237
+ER 246 244
+ET 247 246 245
+EEB MulB' 247
+Export MulB'
+Exit
+Export MulB'
+Exit
+Export MulB'
+Exit
+Export MulDistribution
+Export MulAssociative
+Export Mul0n
+Export MulB'
+ArbitraryObject aaa a base
+Assume a 0 nat#a
+UF 1 MulA a
+EIB 2 1
+Function 3 n mul#n#0=0 a
+ER 4 3
+ET 5 4 2
+EEB 6 5
+UF 7 Mul0n a
+EIB 8 7
+Function 9 n nat#n?mul#0#n=0?true a
+ER 10 9
+ET 11 10 8
+EEB 12 11
+C0 13 0 mul#0#a=0 true
+EIB 14 12
+ER 15 13
+ET 16 15 14
+EEB 17 16
+ER 18 17
+ET 19 6 18
+EIB 20 19
+Function 21 x mul#a#x=mul#x#a 0
+ET 22 21 20
+EEB 23 22
+ArbitraryObject b b base
+Assume bb 24 nat#b
+Assume Assumption 25 (x:base@mul#a#x=mul#x#a)#b
+Function 26 x mul#a#x=mul#x#a b
+EIB 27 25
+ER 28 26
+ET 29 28 27
+EEB 30 29
+UF 31 MulB a
+EIB 32 31
+Function 33 m !n:base@mul#m#(next#n)=add#(mul#m#n)#m a
+ER 34 33
+ET 35 34 32
+EEB 36 35
+UF 37 36 b
+EIB 38 37
+Function 39 n mul#a#(next#n)=add#(mul#a#n)#a b
+ER 40 39
+ET 41 40 38
+EEB 42 41
+EE 43 30 x:base@add#x#a
+Function 44 x add#x#a mul#a#b
+ER 45 44
+ET 46 45 43
+Function 47 x add#x#a mul#b#a
+ET 48 46 47
+ET 49 42 48
+UF 50 MulB' b
+EIB 51 50
+Function 52 a nat#a?!(bb:base@nat#bb?mul#(next#a)#bb=add#(mul#a#bb)#bb?true)?true b
+ER 53 52
+ET 54 53 51
+EEB 55 54
+C0 56 24 !(bb:base@nat#bb?mul#(next#b)#bb=add#(mul#b#bb)#bb?true) true
+EIB 57 55
+ER 58 56
+ET 59 58 57
+EEB 60 59
+UF 61 60 a
+EIB 62 61
+Function 63 bb nat#bb?mul#(next#b)#bb=add#(mul#b#bb)#bb?true a
+ER 64 63
+ET 65 64 62
+EEB 66 65
+C0 67 0 mul#(next#b)#a=add#(mul#b#a)#a true
+EIB 68 66
+ER 69 67
+ET 70 69 68
+EEB 71 70
+ER 72 71
+ET 73 49 72
+EIB 74 73
+Function 75 x mul#a#x=mul#x#a next#b
+ET 76 75 74
+EEB 77 76
+Export 77
+Exit
+Export 77
+Exit
+Export 77
+Exit
+UF 78 PeanoE x:base@mul#a#x=mul#x#a
+EIB 79 78
+Function 80 set set#0?(!(n:base@nat#n?(set#n?set#(next#n)?true)?true)?!(n:base@nat#n?set#n?true)?true)?true x:base@mul#a#x=mul#x#a
+ER 81 80
+ET 82 81 79
+EEB 83 82
+C0 84 23 (!(n:base@nat#n?((x:base@mul#a#x=mul#x#a)#n?(x:base@mul#a#x=mul#x#a)#(next#n)?true)?true)?!(n:base@nat#n?(x:base@mul#a#x=mul#x#a)#n?true)?true) true
+EIB 85 83
+ER 86 84
+ET 87 86 85
+EEB 88 87
+C0 89 77 !(n:base@nat#n?(x:base@mul#a#x=mul#x#a)#n?true) true
+EIB 90 88
+ER 91 89
+ET 92 91 90
+EEB 93 92
+ArbitraryObject bb b base
+UF 94 93 b
+EIB 95 94
+Function 96 n nat#n?(x:base@mul#a#x=mul#x#a)#n?true b
+ER 97 96
+ET 98 97 95
+EEB 99 98
+Function 100 x mul#a#x=mul#x#a b
+EE 101 100 p:bool@nat#b?p?true
+Function 102 p nat#b?p?true (x:base@mul#a#x=mul#x#a)#b
+ER 103 102
+ET 104 103 101
+Function 105 p nat#b?p?true mul#a#b=mul#b#a
+ET 106 104 105
+EIB 107 99
+ER 108 106
+ET 109 108 107
+EEB MulCommutative 109
+Export MulCommutative
+Exit
+Export MulCommutative
+Exit
+Export MulCommutative
+Exit
+Export MulCommutative
+Exit
+Scope ProofOfPow
+ArbitraryObject n n base
+UT 0 RecurseA base
+EIB 1 0
+Template 2 S !f:S~base~S@!init:S@recurse#S#f#init#0=init base
+ER 3 2
+ET 4 3 1
+EEB 5 4
+UF 6 5 x:base@y:base@mul#x#n
+EIB 7 6
+Function 8 f !init:base@recurse#base#f#init#0=init x:base@y:base@mul#x#n
+ER 9 8
+ET 10 9 7
+EEB 11 10
+UF 12 11 1
+EIB 13 12
+Function 14 init recurse#base#(x:base@y:base@mul#x#n)#init#0=init 1
+ER 15 14
+ET 16 15 13
+EEB 17 16
+Function 18 m recurse#base#(x:base@y:base@mul#x#m)#1 n
+EE 19 18 x:base~base@x#0
+Function 20 x x#0 pow#n
+Function 21 x x#0 recurse#base#(x:base@y:base@mul#x#n)#1
+ER 22 20
+ET 23 22 19
+ET 24 23 21
+ET PowA 24 17
+Export PowA
+Exit
+Export PowA
+ArbitraryObject m m base
+UT 0 RecurseB base
+EIB 1 0
+Template 2 S !f:S~base~S@!init:S@!n:base@recurse#S#f#init#(next#n)=f#(recurse#S#f#init#n)#n base
+ER 3 2
+ET 4 3 1
+EEB 5 4
+UF 6 5 x:base@y:base@mul#x#m
+EIB 7 6
+Function 8 f !init:base@!n:base@recurse#base#f#init#(next#n)=f#(recurse#base#f#init#n)#n x:base@y:base@mul#x#m
+ER 9 8
+ET 10 9 7
+EEB 11 10
+UF 12 11 1
+EIB 13 12
+Function 14 init !n:base@recurse#base#(x:base@y:base@mul#x#m)#init#(next#n)=(x:base@y:base@mul#x#m)#(recurse#base#(x:base@y:base@mul#x#m)#init#n)#n 1
+ER 15 14
+ET 16 15 13
+Function 17 m recurse#base#(x:base@y:base@mul#x#m)#1 m
+EE 18 17 x:base~base@!n:base@x#(next#n)=(x:base@y:base@mul#x#m)#(x#n)#n
+Function 19 x !n:base@x#(next#n)=(x:base@y:base@mul#x#m)#(x#n)#n pow#m
+Function 20 x !n:base@x#(next#n)=(x:base@y:base@mul#x#m)#(x#n)#n recurse#base#(x:base@y:base@mul#x#m)#1
+ER 21 19
+ET 22 21 18
+ET 23 22 20
+ET 24 23 16
+EEB 25 24
+ArbitraryObject n n base
+UF 26 25 n
+EIB 27 26
+Function 28 n pow#m#(next#n)=(x:base@y:base@mul#x#m)#(pow#m#n)#n n
+ER 29 28
+ET 30 29 27
+EEB 31 30
+Function 32 x y:base@mul#x#m pow#m#n
+EE 33 32 x:base~base@x#n
+Function 34 x x#n (x:base@y:base@mul#x#m)#(pow#m#n)
+Function 35 x x#n y:base@mul#(pow#m#n)#m
+ER 36 34
+ET 37 36 33
+ET 38 37 35
+ET 39 31 38
+Function 40 y mul#(pow#m#n)#m n
+ET PowB 39 40
+Export PowB
+Exit
+Export PowB
+Exit
+Export PowB
+Exit
+Scope ProofOfSumN
+ArbitraryObject f f base~base
+UT 0 RecurseA base
+EIB 1 0
+Template 2 S !f:S~base~S@!init:S@recurse#S#f#init#0=init base
+ER 3 2
+ET 4 3 1
+EEB 5 4
+UF 6 5 x:base@y:base@add#x#(f#y)
+EIB 7 6
+Function 8 f !init:base@recurse#base#f#init#0=init x:base@y:base@add#x#(f#y)
+ER 9 8
+ET 10 9 7
+EEB 11 10
+UF 12 11 0
+EIB 13 12
+Function 14 init recurse#base#(x:base@y:base@add#x#(f#y))#init#0=init 0
+ER 15 14
+ET 16 15 13
+EEB 17 16
+Function 18 f recurse#base#(x:base@y:base@add#x#(f#y))#0 f
+EE 19 18 p:base~base@p#0
+Function 20 p p#0 (f:base~base@recurse#base#(x:base@y:base@add#x#(f#y))#0)#f
+ER 21 20
+ET 22 21 19
+Function 23 p p#0 recurse#base#(x:base@y:base@add#x#(f#y))#0
+ET 24 22 23
+ET 25 24 17
+EI 26 sumN#f#0
+ET SumNA 26 25
+Export SumNA
+Exit
+Export SumNA
+ArbitraryObject ff f base~base
+UT 0 RecurseB base
+EIB 1 0
+Template 2 S !f:S~base~S@!init:S@!n:base@recurse#S#f#init#(next#n)=f#(recurse#S#f#init#n)#n base
+ER 3 2
+ET 4 3 1
+EEB 5 4
+UF 6 5 x:base@y:base@add#x#(f#y)
+EIB 7 6
+Function 8 f !init:base@!n:base@recurse#base#f#init#(next#n)=f#(recurse#base#f#init#n)#n x:base@y:base@add#x#(f#y)
+ER 9 8
+ET 10 9 7
+EEB 11 10
+UF 12 11 0
+EIB 13 12
+Function 14 init !n:base@recurse#base#(x:base@y:base@add#x#(f#y))#init#(next#n)=(x:base@y:base@add#x#(f#y))#(recurse#base#(x:base@y:base@add#x#(f#y))#init#n)#n 0
+ER 15 14
+ET 16 15 13
+EEB 17 16
+ArbitraryObject n n base
+UF 18 17 n
+EIB 19 18
+Function 20 n recurse#base#(x:base@y:base@add#x#(f#y))#0#(next#n)=(x:base@y:base@add#x#(f#y))#(recurse#base#(x:base@y:base@add#x#(f#y))#0#n)#n n
+ER 21 20
+ET 22 21 19
+EEB 23 22
+Function 24 f recurse#base#(x:base@y:base@add#x#(f#y))#0 f
+EI 25 sumN#f
+ET 26 25 24
+EIB 27 23
+EE 28 26 p:base~base@p#(next#n)=(x:base@y:base@add#x#(f#y))#(p#n)#n
+Function 29 p p#(next#n)=(x:base@y:base@add#x#(f#y))#(p#n)#n sumN#f
+ER 30 29
+ET 31 30 28
+Function 32 p p#(next#n)=(x:base@y:base@add#x#(f#y))#(p#n)#n recurse#base#(x:base@y:base@add#x#(f#y))#0
+ET 33 31 32
+ET 34 33 27
+EEB 35 34
+Function 36 x y:base@add#x#(f#y) sumN#f#n
+EE 37 36 p:base~base@p#n
+Function 38 p p#n (x:base@y:base@add#x#(f#y))#(sumN#f#n)
+ER 39 38
+ET 40 39 37
+Function 41 p p#n y:base@add#(sumN#f#n)#(f#y)
+ET 42 40 41
+ET 43 35 42
+Function 44 y add#(sumN#f#n)#(f#y) n
+ET SumNB 43 44
+Export SumNB
+Exit
+Export SumNB
+Exit
+Export SumNB
+Exit
+Scope ProofOfProdN
+ArbitraryObject f f base~base
+UT 0 RecurseA base
+EIB 1 0
+Template 2 S !f:S~base~S@!init:S@recurse#S#f#init#0=init base
+ER 3 2
+ET 4 3 1
+EEB 5 4
+UF 6 5 x:base@y:base@mul#x#(f#y)
+EIB 7 6
+Function 8 f !init:base@recurse#base#f#init#0=init x:base@y:base@mul#x#(f#y)
+ER 9 8
+ET 10 9 7
+EEB 11 10
+UF 12 11 1
+EIB 13 12
+Function 14 init recurse#base#(x:base@y:base@mul#x#(f#y))#init#0=init 1
+ER 15 14
+ET 16 15 13
+EEB 17 16
+Function 18 f recurse#base#(x:base@y:base@mul#x#(f#y))#1 f
+EE 19 18 p:base~base@p#0
+Function 20 p p#0 (f:base~base@recurse#base#(x:base@y:base@mul#x#(f#y))#1)#f
+ER 21 20
+ET 22 21 19
+Function 23 p p#0 recurse#base#(x:base@y:base@mul#x#(f#y))#1
+ET 24 22 23
+ET 25 24 17
+EI 26 prodN#f#0
+ET ProdNA 26 25
+Export ProdNA
+Exit
+Export ProdNA
+ArbitraryObject ff f base~base
+UT 0 RecurseB base
+EIB 1 0
+Template 2 S !f:S~base~S@!init:S@!n:base@recurse#S#f#init#(next#n)=f#(recurse#S#f#init#n)#n base
+ER 3 2
+ET 4 3 1
+EEB 5 4
+UF 6 5 x:base@y:base@mul#x#(f#y)
+EIB 7 6
+Function 8 f !init:base@!n:base@recurse#base#f#init#(next#n)=f#(recurse#base#f#init#n)#n x:base@y:base@mul#x#(f#y)
+ER 9 8
+ET 10 9 7
+EEB 11 10
+UF 12 11 1
+EIB 13 12
+Function 14 init !n:base@recurse#base#(x:base@y:base@mul#x#(f#y))#init#(next#n)=(x:base@y:base@mul#x#(f#y))#(recurse#base#(x:base@y:base@mul#x#(f#y))#init#n)#n 1
+ER 15 14
+ET 16 15 13
+EEB 17 16
+ArbitraryObject n n base
+UF 18 17 n
+EIB 19 18
+Function 20 n recurse#base#(x:base@y:base@mul#x#(f#y))#1#(next#n)=(x:base@y:base@mul#x#(f#y))#(recurse#base#(x:base@y:base@mul#x#(f#y))#1#n)#n n
+ER 21 20
+ET 22 21 19
+EEB 23 22
+Function 24 f recurse#base#(x:base@y:base@mul#x#(f#y))#1 f
+EI 25 prodN#f
+ET 26 25 24
+EIB 27 23
+EE 28 26 p:base~base@p#(next#n)=(x:base@y:base@mul#x#(f#y))#(p#n)#n
+Function 29 p p#(next#n)=(x:base@y:base@mul#x#(f#y))#(p#n)#n prodN#f
+ER 30 29
+ET 31 30 28
+Function 32 p p#(next#n)=(x:base@y:base@mul#x#(f#y))#(p#n)#n recurse#base#(x:base@y:base@mul#x#(f#y))#1
+ET 33 31 32
+ET 34 33 27
+EEB 35 34
+Function 36 x y:base@mul#x#(f#y) prodN#f#n
+EE 37 36 p:base~base@p#n
+Function 38 p p#n (x:base@y:base@mul#x#(f#y))#(prodN#f#n)
+ER 39 38
+ET 40 39 37
+Function 41 p p#n y:base@mul#(prodN#f#n)#(f#y)
+ET 42 40 41
+ET 43 35 42
+Function 44 y mul#(prodN#f#n)#(f#y) n
+ET ProdNB 43 44
+Export ProdNB
+Exit
+Export ProdNB
+Exit
+Export ProdNB
 Exit
